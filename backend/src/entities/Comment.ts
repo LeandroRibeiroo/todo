@@ -4,17 +4,19 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Task } from './Task';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity()
 export class Comment {
-  @PrimaryColumn('uuid')
-  commentId: string = '';
+  @PrimaryGeneratedColumn('uuid')
+  commentId: string;
 
   @Column('text')
-  content: string = '';
+  @IsNotEmpty()
+  content: string;
 
   @ManyToOne(() => Task, (task) => task.comments)
   task: Task = new Task();

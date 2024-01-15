@@ -1,10 +1,6 @@
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 import { resolve } from 'path';
-import { Task } from './entities/Task';
-import { Comment } from './entities/Comment';
-import { Subtask } from './entities/Subtask';
-import { User } from './entities/User';
 
 config({ path: resolve(__dirname, '.env.local') });
 
@@ -17,7 +13,8 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DB,
   synchronize: false,
   logging: false,
-  entities: [User, Task, Subtask, Comment],
+  entities: ['src/entities/*.ts'],
+  migrations: ['src/migrations/*.ts'],
 });
 
 AppDataSource.initialize()

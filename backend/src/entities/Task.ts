@@ -4,24 +4,27 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryColumn,
   ManyToOne,
   JoinColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Subtask } from './Subtask';
 import { Comment } from './Comment';
 import { User } from './User';
 
 @Entity()
 export class Task {
-  @PrimaryColumn('uuid')
-  taskId: string = '';
+  @PrimaryGeneratedColumn('uuid')
+  taskId: string;
 
   @Column()
-  taskTitle: string = '';
+  @IsNotEmpty()
+  taskTitle: string;
 
   @Column('text')
-  taskDescription: string = '';
+  @IsOptional()
+  taskDescription: string;
 
   @Column({ default: false })
   isTaskCompleted: boolean = false;
@@ -29,18 +32,18 @@ export class Task {
   @OneToMany(() => Subtask, (subtask) => subtask.task, {
     cascade: true,
   })
-  subtasks: Subtask[] | undefined;
+  subtasks: Subtask[];
 
   @OneToMany(() => Comment, (comment) => comment.task, {
     cascade: true,
   })
-  comments: Comment[] | undefined;
+  comments: Comment[];
 
   @ManyToOne(() => User, (user) => user.tasks, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'userId' })
-  user: User | undefined;
+  user: User;
 
   @CreateDateColumn()
   createdAt: Date = new Date();

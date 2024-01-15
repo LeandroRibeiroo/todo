@@ -14,7 +14,7 @@ export class UserService {
     const newUser = this.userRepository.create(userData);
 
     if (!newUser) {
-      throw new Error('User could not be created.');
+      throw new Error('User Service: User could not be created.');
     }
 
     newUser.password = await hashPassword(newUser.password);
@@ -24,36 +24,32 @@ export class UserService {
     return savedUser;
   }
 
-  async updateUser(id: string, userData: Partial<User>) {
-    const user = await this.userRepository.findOneBy({ id });
+  async updateUser(userId: string, userData: Partial<User>) {
+    const updatedUser = this.userRepository.update({ userId }, userData);
 
-    if (!user) {
-      throw new Error('User not found.');
+    if (!updatedUser) {
+      throw new Error('User Service: User could not be updated.');
     }
-
-    const updatedUser = this.userRepository.update(user, userData);
 
     return updatedUser;
   }
 
-  async getUser(id: string) {
-    const user = await this.userRepository.findOneBy({ id });
+  async getUser(userId: string) {
+    const user = await this.userRepository.findOneBy({ userId });
 
     if (!user) {
-      throw new Error('User not found.');
+      throw new Error('User Service: User could not be found.');
     }
 
     return user;
   }
 
-  async deleteUser(id: string) {
-    const user = await this.userRepository.findOneBy({ id });
+  async deleteUser(userId: string) {
+    const deletedUser = await this.userRepository.delete({ userId });
 
-    if (!user) {
-      throw new Error('User not found.');
+    if (!deletedUser) {
+      throw new Error('User Service: User could not be deleted.');
     }
-
-    const deletedUser = await this.userRepository.delete(user);
 
     return deletedUser;
   }

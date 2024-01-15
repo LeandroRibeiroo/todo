@@ -5,12 +5,13 @@ import {
   getUser,
   updateUser,
 } from '../controllers/UserController';
+import { authenticateToken } from '../middlewares/authenticateToken';
 
 const router = Router();
 
 router.post('/', createUser);
-router.put('/:id', updateUser);
-router.get('/:id', getUser);
-router.delete('/:id', deleteUser);
+router.put('/:userId', authenticateToken, updateUser);
+router.get('/:userId', authenticateToken, getUser);
+router.delete('/:userId', authenticateToken, deleteUser);
 
 export default router;

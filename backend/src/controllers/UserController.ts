@@ -18,8 +18,20 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   const { body, params } = req;
 
+  const { userId } = params;
+
   try {
-    const updatedUser = await userService.updateUser(params.id, body);
+    if (!userId) {
+      return res.status(400).json({ message: 'User id not provided.' });
+    }
+
+    const user = await userService.getUser(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const updatedUser = await userService.updateUser(userId, body);
 
     res.status(200).json(updatedUser);
   } catch (error: any) {
@@ -28,10 +40,16 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  const { params } = req;
+  const {
+    params: { userId },
+  } = req;
 
   try {
-    const user = await userService.getUser(params.id);
+    if (!userId) {
+      return res.status(400).json({ message: 'User id not provided.' });
+    }
+
+    const user = await userService.getUser(userId);
 
     res.status(200).json(user);
   } catch (error: any) {
@@ -40,10 +58,22 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-  const { params } = req;
+  const {
+    params: { userId },
+  } = req;
 
   try {
-    const deletedUser = await userService.deleteUser(params.id);
+    if (!userId) {
+      return res.status(400).json({ message: 'User id not provided.' });
+    }
+
+    const user = await userService.getUser(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const deletedUser = await userService.deleteUser(userId);
 
     res.status(200).json(deletedUser);
   } catch (error: any) {

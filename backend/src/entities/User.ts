@@ -3,30 +3,36 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryColumn,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Task } from './Task';
 
 @Entity()
 export class User {
-  @PrimaryColumn('uuid')
-  id: string = '';
+  @PrimaryGeneratedColumn('uuid')
+  userId: string;
 
   @Column()
-  name: string = '';
+  @IsNotEmpty()
+  name: string;
 
   @Column()
-  lastname: string = '';
+  @IsNotEmpty()
+  lastname: string;
 
   @Column()
-  username: string = '';
+  @IsOptional()
+  username: string;
 
   @Column({ unique: true })
-  email: string = '';
+  @IsNotEmpty()
+  email: string;
 
   @Column()
-  password: string = '';
+  @IsNotEmpty()
+  password: string;
 
   @OneToMany(() => Task, (task) => task.user, {
     cascade: true,
@@ -38,4 +44,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date = new Date();
+
+  @Column()
+  refreshToken: string | undefined;
 }

@@ -10,15 +10,18 @@
     "lint": "eslint --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",
     "format": "prettier --write \"**/*.{ts,js,json}\"",
-    "typeorm": "typeorm-ts-node-commonjs"
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "class-validator": "^0.14.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-jwt": "^8.4.1",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.2.1",
     "typeorm": "^0.3.19"

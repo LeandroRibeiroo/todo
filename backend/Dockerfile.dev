@@ -1,6 +1,6 @@
 FROM node:20-alpine
 
-RUN apk update && apk add git
+RUN apk add --no-cache netcat-openbsd
 
 WORKDIR /app
 
@@ -10,8 +10,10 @@ RUN npm install
 
 COPY . .
 
-RUN git clone https://github.com/vishnubob/wait-for-it.git
+# Copy the entrypoint script
+COPY entrypoint.sh /app/
 
 EXPOSE 3000
 
-CMD npm run start
+# Set the entrypoint script to be executed
+ENTRYPOINT ["./entrypoint.sh"]

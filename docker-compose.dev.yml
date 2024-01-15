@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
   db:
-    container_name: todo.bd.postgres
     image: postgres:16
     ports:
       - '5432:5432'
@@ -12,29 +11,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=yoke2.famous
       - POSTGRES_DB=todo
-
-  migrations:
-    links:
-      - db
-    depends_on:
-      - db
-    build:
-      context: ./backend
-    command:
-      [
-        './wait-for-it/wait-for-it.sh',
-        'todo.bd.postgres:5432',
-        '--',
-        'npm',
-        'run',
-        'migrate',
-      ]
-    environment:
-      - POSTGRES_USERNAME=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=todo
-      - POSTGRES_HOST=todo.bd.postgres
-      - POSTGRES_PASSWORD=yoke2.famous
 
   api:
     depends_on:
@@ -51,8 +27,10 @@ services:
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_DB=todo
-      - POSTGRES_HOST=todo.bd.postgres
+      - POSTGRES_HOST=db
       - POSTGRES_PASSWORD=yoke2.famous
+      - JWT_SECRET=todo-api-91afbfa0-a385-4242-9239-721b12361cc2
+      - JWT_REFRESH_SECRET=todo-api-8de9d8e4-5ff9-4638-95bb-312081ccd7e5
 
 volumes:
   todo:

@@ -4,17 +4,19 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
+import { IsNotEmpty } from 'class-validator';
 import { Task } from './Task';
 
 @Entity()
 export class Subtask {
-  @PrimaryColumn('uuid')
-  subtaskId: string = '';
+  @PrimaryGeneratedColumn('uuid')
+  subtaskId: string;
 
   @Column()
-  subtaskTitle: string = '';
+  @IsNotEmpty()
+  subtaskTitle: string;
 
   @Column({ default: false })
   isSubtaskCompleted: boolean = false;
