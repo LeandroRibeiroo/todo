@@ -1,5 +1,6 @@
 import { Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { AppDataSource } from '../data-source';
 import { User } from '../entities/User';
 import { generateAuthToken } from '../helpers/generateTokenHelper';
@@ -31,7 +32,11 @@ export class AuthService {
       refreshToken: tokens.refreshToken,
     });
 
-    return tokens;
+    return {
+      userId: user.userId,
+      token: tokens.token,
+      refreshToken: tokens.refreshToken,
+    };
   }
 
   async refreshToken(refreshToken: string) {
@@ -41,6 +46,15 @@ export class AuthService {
 
     if (!user) {
       throw new Error('Refresh Token Service: User could not be found.');
+    }
+
+    const isRefreshTokenValid = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET ?? '',
+    );
+
+    if (!isRefreshTokenValid) {
+      throw new Error('Refresh Token Service: Refresh token is not valid.');
     }
 
     const tokens = generateAuthToken(user.userId);

@@ -39,7 +39,10 @@ export class TaskService {
   }
 
   async getTask(taskId: string) {
-    const task = await this.taskRepository.findOneBy({ taskId });
+    const task = await this.taskRepository.findOne({
+      where: { taskId },
+      relations: ['subtasks'],
+    });
 
     if (!task) {
       throw new Error('Task Service: Task could not be found.');
@@ -48,14 +51,29 @@ export class TaskService {
     return task;
   }
 
-  async updateTask(taskId: string, taskData: Partial<Task>) {
-    const updatedTask = this.taskRepository.update({ taskId }, taskData);
+  async updateTask(taskId: string, taskData: Partial<Task>): Promise<Task> {
+    try {
+      const task = await this.taskRepository.findOne({
+        where: { taskId },
+      });
 
-    if (!updatedTask) {
-      throw new Error('Task Service: Task could not be updated.');
+      if (!task) {
+        throw new Error('Task Service: Task could not be found.');
+      }
+
+      const updatedTask = await this.taskRepository.save({
+        ...task,
+        ...taskData,
+      });
+
+      if (!updatedTask) {
+        throw new Error('Task Service: Task could not be updated.');
+      }
+
+      return updatedTask;
+    } catch (error: any) {
+      throw new Error(`Task Service: An error occurred - ${error.message}`);
     }
-
-    return updatedTask;
   }
 
   async deleteTask(taskId: string) {

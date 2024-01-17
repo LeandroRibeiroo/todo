@@ -10,8 +10,6 @@ export const createTask = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const { taskTitle, taskDescription } = req.body;
 
-    console.log('userId', userId);
-
     if (!userId) {
       return res.status(400).json({ error: 'User id not provided.' });
     }
@@ -27,7 +25,17 @@ export const createTask = async (req: Request, res: Response) => {
       user,
     );
 
-    return res.json(task);
+    const response = {
+      taskId: task.taskId,
+      taskTitle: task.taskTitle,
+      taskDescription: task.taskDescription,
+      taskCreatedAt: task.createdAt,
+      taskUpdatedAt: task.updatedAt,
+      subtasks: task.subtasks,
+      comments: task.comments,
+    };
+
+    return res.json(response);
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
@@ -49,7 +57,17 @@ export const getAllTasksByUser = async (req: Request, res: Response) => {
 
     const tasks = await taskService.getTasksByUserId(userId);
 
-    return res.json(tasks);
+    const response = tasks.map((task) => ({
+      taskId: task.taskId,
+      taskTitle: task.taskTitle,
+      taskDescription: task.taskDescription,
+      taskCreatedAt: task.createdAt,
+      taskUpdatedAt: task.updatedAt,
+      subtasks: task.subtasks,
+      comments: task.comments,
+    }));
+
+    return res.json(response);
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
@@ -69,7 +87,17 @@ export const getTaskById = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Task not found.' });
     }
 
-    return res.json(task);
+    const response = {
+      taskId: task.taskId,
+      taskTitle: task.taskTitle,
+      taskDescription: task.taskDescription,
+      taskCreatedAt: task.createdAt,
+      taskUpdatedAt: task.updatedAt,
+      subtasks: task.subtasks,
+      comments: task.comments,
+    };
+
+    return res.json(response);
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
@@ -77,6 +105,7 @@ export const getTaskById = async (req: Request, res: Response) => {
 
 export const updateTask = async (req: Request, res: Response) => {
   const { taskId } = req.params;
+
   try {
     if (!taskId) {
       return res.status(400).json({ error: 'Task id not provided.' });
@@ -90,7 +119,17 @@ export const updateTask = async (req: Request, res: Response) => {
 
     const updatedTask = await taskService.updateTask(taskId, req.body);
 
-    return res.json(updatedTask);
+    const response = {
+      taskId: updatedTask.taskId,
+      taskTitle: updatedTask.taskTitle,
+      taskDescription: updatedTask.taskDescription,
+      taskCreatedAt: updatedTask.createdAt,
+      taskUpdatedAt: updatedTask.updatedAt,
+      subtasks: updatedTask.subtasks,
+      comments: updatedTask.comments,
+    };
+
+    return res.json(response);
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }

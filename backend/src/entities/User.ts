@@ -5,6 +5,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   PrimaryGeneratedColumn,
+  JoinColumn,
 } from 'typeorm';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Task } from './Task';
@@ -34,17 +35,18 @@ export class User {
   @IsNotEmpty()
   password: string;
 
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @OneToMany(() => Task, (task) => task.user, {
     cascade: true,
+    nullable: true,
   })
-  tasks: Task[] | undefined;
+  tasks: Task[] | null = null;
 
   @CreateDateColumn()
   createdAt: Date = new Date();
 
   @UpdateDateColumn()
   updatedAt: Date = new Date();
-
-  @Column()
-  refreshToken: string | undefined;
 }

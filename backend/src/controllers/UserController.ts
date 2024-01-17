@@ -7,9 +7,13 @@ export const createUser = async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
-    const newUser = await userService.createUser(body);
+    await userService.createUser(body);
 
-    res.status(201).json(newUser);
+    const response = {
+      message: 'User created successfully.',
+    };
+
+    res.status(201).json(response);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
@@ -31,9 +35,13 @@ export const updateUser = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const updatedUser = await userService.updateUser(userId, body);
+    await userService.updateUser(userId, body);
 
-    res.status(200).json(updatedUser);
+    const response = {
+      message: 'User updated successfully.',
+    };
+
+    res.status(200).json(response);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
@@ -51,7 +59,17 @@ export const getUser = async (req: Request, res: Response) => {
 
     const user = await userService.getUser(userId);
 
-    res.status(200).json(user);
+    const response = {
+      userId: user.userId,
+      email: user.email,
+      name: user.name,
+      lastname: user.lastname,
+      username: user.username,
+      refreshToken: user.refreshToken,
+      tasks: user.tasks,
+    };
+
+    res.status(200).json(response);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
@@ -73,9 +91,13 @@ export const deleteUser = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const deletedUser = await userService.deleteUser(userId);
+    await userService.deleteUser(userId);
 
-    res.status(200).json(deletedUser);
+    const response = {
+      message: 'User deleted successfully.',
+    };
+
+    res.status(200).json(response);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }

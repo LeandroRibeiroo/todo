@@ -27,21 +27,26 @@ export class Task {
   taskDescription: string;
 
   @Column({ default: false })
-  isTaskCompleted: boolean = false;
+  isTaskCompleted: boolean;
 
   @OneToMany(() => Subtask, (subtask) => subtask.task, {
     cascade: true,
+    nullable: true,
   })
+  @JoinColumn({ name: 'taskId' })
   subtasks: Subtask[];
 
   @OneToMany(() => Comment, (comment) => comment.task, {
     cascade: true,
+    nullable: true,
   })
+  @JoinColumn({ name: 'taskId' })
   comments: Comment[];
 
-  @ManyToOne(() => User, (user) => user.tasks, {
-    onDelete: 'CASCADE',
-  })
+  @Column({ type: 'uuid' })
+  userId: string;
+
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'userId' })
   user: User;
 
