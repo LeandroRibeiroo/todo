@@ -35,12 +35,8 @@ export const createSubtask = async (req: Request, res: Response) => {
 
 export const updateSubtask = async (req: Request, res: Response) => {
   try {
-    const { taskId, subtaskId } = req.params;
+    const { subtaskId } = req.params;
     const { subtaskTitle, isSubtaskCompleted } = req.body;
-
-    if (!taskId) {
-      return res.status(400).json({ error: 'Task id not provided.' });
-    }
 
     if (!subtaskId) {
       return res.status(400).json({ error: 'Subtask id not provided.' });
@@ -51,11 +47,18 @@ export const updateSubtask = async (req: Request, res: Response) => {
       isSubtaskCompleted,
     };
 
-    await subtaskService.updateSubtask(subtaskId, subtaskData);
+    const updatedTask = await subtaskService.updateSubtask(
+      subtaskId,
+      subtaskData,
+    );
 
-    const task = await taskService.getTask(taskId);
+    const response = {
+      subtaskId: updatedTask.subtaskId,
+      subtaskTitle: updatedTask.subtaskTitle,
+      isSubtaskCompleted: updatedTask.isSubtaskCompleted,
+    };
 
-    return res.json(task);
+    return res.json(response);
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
@@ -63,11 +66,7 @@ export const updateSubtask = async (req: Request, res: Response) => {
 
 export const deleteSubtask = async (req: Request, res: Response) => {
   try {
-    const { taskId, subtaskId } = req.params;
-
-    if (!taskId) {
-      return res.status(400).json({ error: 'Task id not provided.' });
-    }
+    const { subtaskId } = req.params;
 
     if (!subtaskId) {
       return res.status(400).json({ error: 'Subtask id not provided.' });
@@ -75,9 +74,7 @@ export const deleteSubtask = async (req: Request, res: Response) => {
 
     await subtaskService.deleteSubtask(subtaskId);
 
-    const task = await taskService.getTask(taskId);
-
-    return res.json(task);
+    return res.json({ message: 'Subtask deleted successfully.' });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }

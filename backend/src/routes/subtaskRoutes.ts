@@ -9,7 +9,7 @@ import { authenticateToken } from '../middlewares/authenticateToken';
 const router = Router();
 
 router.post('/:taskId', authenticateToken, createSubtask);
-router.put('/:taskId/:subtaskId', authenticateToken, updateSubtask);
-router.delete('/:taskId/:subtaskId', authenticateToken, deleteSubtask);
+router.put('/:subtaskId', authenticateToken, updateSubtask);
+router.delete('/:subtaskId', authenticateToken, deleteSubtask);
 
 export default router;

@@ -11,7 +11,7 @@ import { authenticateToken } from '../middlewares/authenticateToken';
 const router = Router();
 
 router.post('/:userId', authenticateToken, createTask);
-router.get('/:userId', authenticateToken, getAllTasksByUser);
+router.get('/', authenticateToken, getAllTasksByUser);
 router.get('/task/:taskId', authenticateToken, getTaskById);
 router.put('/task/:taskId', authenticateToken, updateTask);
 router.delete('/task/:taskId', authenticateToken, deleteTask);

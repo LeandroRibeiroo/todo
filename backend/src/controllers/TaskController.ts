@@ -1,14 +1,23 @@
 import { Request, Response } from 'express';
 import { TaskService } from '../services/TaskService';
 import { UserService } from '../services/UserService';
+import { decodeTokenHelper } from '../helpers/decodeTokenHelper';
 
 const taskService = new TaskService();
 const userService = new UserService();
 
 export const createTask = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
     const { taskTitle, taskDescription } = req.body;
+
+    const authHeader = req.headers.authorization;
+    const accessToken = authHeader?.split(' ')[1];
+
+    if (!accessToken) {
+      return res.status(401).json({ error: 'Access token not provided.' });
+    }
+
+    const userId = decodeTokenHelper(accessToken);
 
     if (!userId) {
       return res.status(400).json({ error: 'User id not provided.' });
@@ -22,7 +31,7 @@ export const createTask = async (req: Request, res: Response) => {
 
     const task = await taskService.createTask(
       { taskTitle, taskDescription },
-      user,
+      userId,
     );
 
     const response = {
@@ -42,7 +51,13 @@ export const createTask = async (req: Request, res: Response) => {
 };
 
 export const getAllTasksByUser = async (req: Request, res: Response) => {
-  const { userId } = req.params;
+  const accessToken = req.headers.authorization?.split(' ')[1];
+
+  if (!accessToken) {
+    return res.status(401).json({ error: 'Access token not provided.' });
+  }
+
+  const userId = decodeTokenHelper(accessToken);
 
   try {
     if (!userId) {
@@ -90,6 +105,7 @@ export const getTaskById = async (req: Request, res: Response) => {
     const response = {
       taskId: task.taskId,
       taskTitle: task.taskTitle,
+      userId: task.userId,
       taskDescription: task.taskDescription,
       taskCreatedAt: task.createdAt,
       taskUpdatedAt: task.updatedAt,

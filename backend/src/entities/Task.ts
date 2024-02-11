@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IsNotEmpty, IsOptional } from 'class-validator';
@@ -33,21 +32,18 @@ export class Task {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn({ name: 'taskId' })
   subtasks: Subtask[];
 
   @OneToMany(() => Comment, (comment) => comment.task, {
     cascade: true,
     nullable: true,
   })
-  @JoinColumn({ name: 'taskId' })
   comments: Comment[];
 
   @Column({ type: 'uuid' })
+  @IsOptional()
   userId: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
+  @ManyToOne(() => User, (user) => user.tasks)
   user: User;
 
   @CreateDateColumn()

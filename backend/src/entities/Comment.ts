@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  JoinColumn,
 } from 'typeorm';
 import { Task } from './Task';
 import { IsNotEmpty } from 'class-validator';
@@ -19,8 +18,9 @@ export class Comment {
   @IsNotEmpty()
   content: string;
 
-  @ManyToOne(() => Task)
-  @JoinColumn({ name: 'taskId' })
+  @Column({ type: 'uuid' })
+  taskId: string;
+  @ManyToOne(() => Task, (task) => task.comments)
   task: Task;
 
   @CreateDateColumn()

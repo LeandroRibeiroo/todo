@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  JoinColumn,
 } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
 import { Task } from './Task';
@@ -22,8 +21,9 @@ export class Subtask {
   @Column({ default: false })
   isSubtaskCompleted: boolean = false;
 
-  @ManyToOne(() => Task)
-  @JoinColumn({ name: 'taskId' })
+  @Column({ type: 'uuid' })
+  taskId: string;
+  @ManyToOne(() => Task, (task) => task.subtasks)
   task: Task;
 
   @CreateDateColumn()

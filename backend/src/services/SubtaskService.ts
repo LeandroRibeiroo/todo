@@ -22,7 +22,7 @@ export class SubtaskService {
 
       const newSubtask = this.subtaskRepository.create({
         ...subtaskData,
-        task: task,
+        taskId,
       });
 
       if (!newSubtask) {
@@ -62,10 +62,10 @@ export class SubtaskService {
       throw new Error('Subtask Service: Subtask could not be found.');
     }
 
-    const updatedSubtask = await this.subtaskRepository.update(
-      subtaskId,
-      subtaskData,
-    );
+    const updatedSubtask = await this.subtaskRepository.save({
+      ...subtask,
+      ...subtaskData,
+    });
 
     if (!updatedSubtask) {
       throw new Error('Subtask Service: Subtask could not be updated.');

@@ -1,22 +1,28 @@
 import { Repository } from 'typeorm';
 import { AppDataSource } from '../data-source';
 import { Comment } from '../entities/Comment';
+import { Task } from '../entities/Task';
 
 export class CommenstService {
   private commentRepository: Repository<Comment>;
+  private taskRepository: Repository<Task>;
 
   constructor() {
     this.commentRepository = AppDataSource.getRepository('Comment');
+    this.taskRepository = AppDataSource.getRepository('Task');
   }
 
   async createComment(commentData: Partial<Comment>, taskId: string) {
-    const newComment = this.commentRepository.create(commentData);
+    const newComment = this.commentRepository.create({
+      ...commentData,
+      taskId,
+    });
 
     if (!newComment) {
       throw new Error('Comment Service: Comment could not be created.');
     }
 
-    const task = await AppDataSource.getRepository('Task').findOne({
+    const task = await this.taskRepository.findOne({
       where: { taskId },
       relations: ['comments'],
     });
@@ -33,7 +39,7 @@ export class CommenstService {
       throw new Error('Comment Service: Comment could not be saved.');
     }
 
-    const savedTask = await AppDataSource.getRepository('Task').save(task);
+    const savedTask = await this.taskRepository.save(task);
 
     if (!savedTask) {
       throw new Error('Comment Service: Task could not be saved.');
@@ -56,10 +62,10 @@ export class CommenstService {
       throw new Error('Comment Service: Comment could not be found.');
     }
 
-    const updatedComment = await this.commentRepository.update(
-      commentId,
-      commentData,
-    );
+    const updatedComment = await this.commentRepository.save({
+      ...comment,
+      ...commentData,
+    });
 
     if (!updatedComment) {
       throw new Error('Comment Service: Comment could not be updated.');
